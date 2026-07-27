@@ -13,7 +13,9 @@ const { initDb } = require('./db');
 const errorHandler = require('./middleware/errorHandler');
 
 const app         = express();
-const HTTPS_PORT  = process.env.HTTPS_PORT || 5000;
+const IS_RENDER   = !!process.env.RENDER;           // Render sets this automatically
+const PORT        = process.env.PORT || 5000;        // Render injects PORT
+const HTTPS_PORT  = process.env.HTTPS_PORT || PORT;
 const TUNNEL_PORT = process.env.TUNNEL_PORT || 5001;
 
 // ── 1. SSL Certificate loader / auto-generator ────────────────────────────
@@ -110,98 +112,116 @@ app.get('/admin', (_req, res) => res.sendFile(path.join(__dirname, 'admin.html')
 app.use(errorHandler);
 
 // ── 8. Start servers ──────────────────────────────────────────────────────
+
+// Shared Socket.io event binder
+function bindSocketEvents(io) {
+    const onlineUsers = new Map(); // userId -> socketId
+
+    io.on('connection', (socket) => {
+        console.log(`🔌  Socket connected: ${socket.id}`);
+
+        // User comes online
+        socket.on('user_online', (userId) => {
+            onlineUsers.set(String(userId), socket.id);
+            io.emit('online_users', Array.from(onlineUsers.keys()));
+        });
+
+        // Join a private chat room
+        socket.on('join_room', ({ userId, peerId }) => {
+            const room = [userId, peerId].sort().join('_');
+            socket.join(room);
+        });
+
+        // Send a chat message
+        socket.on('send_message', (data) => {
+            const room = [data.senderId, data.receiverId].sort().join('_');
+            io.to(room).emit('message_received', data);
+        });
+
+        // Typing indicators
+        socket.on('typing', ({ senderId, receiverId }) => {
+            const room = [senderId, receiverId].sort().join('_');
+            socket.to(room).emit('user_typing', { userId: senderId });
+        });
+
+        socket.on('stop_typing', ({ senderId, receiverId }) => {
+            const room = [senderId, receiverId].sort().join('_');
+            socket.to(room).emit('user_stop_typing', { userId: senderId });
+        });
+
+        // Message reactions
+        socket.on('message_reaction', (data) => {
+            const room = [data.senderId, data.receiverId].sort().join('_');
+            io.to(room).emit('reaction_updated', data);
+        });
+
+        // Disconnect
+        socket.on('disconnect', () => {
+            for (const [userId, sid] of onlineUsers.entries()) {
+                if (sid === socket.id) {
+                    onlineUsers.delete(userId);
+                    break;
+                }
+            }
+            io.emit('online_users', Array.from(onlineUsers.keys()));
+            console.log(`🔌  Socket disconnected: ${socket.id}`);
+        });
+    });
+}
+
 async function startServer() {
     try {
         await initDb();
-        const ssl = await loadOrGenerateCerts();
-
         const line = '═'.repeat(58);
 
-        // HTTPS — for you (local secure access)
-        const httpsServer = https.createServer(ssl, app);
+        if (IS_RENDER) {
+            // ── Render / Production: plain HTTP (Render terminates SSL) ──
+            const httpServer = http.createServer(app);
+            const io = new Server(httpServer, {
+                cors: { origin: '*', methods: ['GET', 'POST'] }
+            });
+            app.set('io', io);
+            bindSocketEvents(io);
 
-        // Attach Socket.io to the HTTPS server
-        const io = new Server(httpsServer, {
-            cors: { origin: '*', methods: ['GET', 'POST'] }
-        });
+            httpServer.listen(PORT, () => {
+                console.log(`\n${line}`);
+                console.log(` 🚀  NexSkill running on Render`);
+                console.log(` 🌐  Port: ${PORT}  (HTTPS handled by Render)`);
+                console.log(` 📊  Admin → /admin`);
+                console.log(`${line}\n`);
+            });
+        } else {
+            // ── Local: HTTPS + HTTP tunnel ────────────────────────────────
+            const ssl = await loadOrGenerateCerts();
 
-        // Make io available to routes
-        app.set('io', io);
+            const httpsServer = https.createServer(ssl, app);
+            const io = new Server(httpsServer, {
+                cors: { origin: '*', methods: ['GET', 'POST'] }
+            });
+            app.set('io', io);
+            bindSocketEvents(io);
 
-        // Socket.io Real-Time Chat
-        const onlineUsers = new Map(); // userId -> socketId
-
-        io.on('connection', (socket) => {
-            console.log(`🔌  Socket connected: ${socket.id}`);
-
-            // User comes online
-            socket.on('user_online', (userId) => {
-                onlineUsers.set(String(userId), socket.id);
-                io.emit('online_users', Array.from(onlineUsers.keys()));
+            httpsServer.listen(HTTPS_PORT, () => {
+                console.log(`\n${line}`);
+                console.log(` 🔒  NexSkill  ·  HTTPS / SSL  (local)`);
+                console.log(` 🌐  https://localhost:${HTTPS_PORT}`);
+                console.log(` 📊  Admin  →  https://localhost:${HTTPS_PORT}/admin`);
+                console.log(line);
             });
 
-            // Join a private chat room
-            socket.on('join_room', ({ userId, peerId }) => {
-                const room = [userId, peerId].sort().join('_');
-                socket.join(room);
+            // HTTP tunnel port
+            const httpServer = http.createServer(app);
+            const ioHttp = new Server(httpServer, {
+                cors: { origin: '*', methods: ['GET', 'POST'] }
             });
+            ioHttp.on('connection', () => {});
 
-            // Send a chat message
-            socket.on('send_message', (data) => {
-                const room = [data.senderId, data.receiverId].sort().join('_');
-                io.to(room).emit('message_received', data);
+            httpServer.listen(TUNNEL_PORT, () => {
+                console.log(` 🌍  Public tunnel port  :${TUNNEL_PORT}  (plain HTTP for tunnel proxy)`);
+                console.log(` 🔗  Run:  npx localtunnel --port ${TUNNEL_PORT} --subdomain nexskill`);
+                console.log(`${line}\n`);
             });
-
-            // Typing indicators
-            socket.on('typing', ({ senderId, receiverId }) => {
-                const room = [senderId, receiverId].sort().join('_');
-                socket.to(room).emit('user_typing', { userId: senderId });
-            });
-
-            socket.on('stop_typing', ({ senderId, receiverId }) => {
-                const room = [senderId, receiverId].sort().join('_');
-                socket.to(room).emit('user_stop_typing', { userId: senderId });
-            });
-
-            // Message reactions
-            socket.on('message_reaction', (data) => {
-                const room = [data.senderId, data.receiverId].sort().join('_');
-                io.to(room).emit('reaction_updated', data);
-            });
-
-            // Disconnect
-            socket.on('disconnect', () => {
-                for (const [userId, sid] of onlineUsers.entries()) {
-                    if (sid === socket.id) {
-                        onlineUsers.delete(userId);
-                        break;
-                    }
-                }
-                io.emit('online_users', Array.from(onlineUsers.keys()));
-                console.log(`🔌  Socket disconnected: ${socket.id}`);
-            });
-        });
-
-        httpsServer.listen(HTTPS_PORT, () => {
-            console.log(`\n${line}`);
-            console.log(` 🔒  NexSkill  ·  HTTPS / SSL  (local)`);
-            console.log(` 🌐  https://localhost:${HTTPS_PORT}`);
-            console.log(` 📊  Admin  →  https://localhost:${HTTPS_PORT}/admin`);
-            console.log(line);
-        });
-
-        // HTTP — for the public tunnel
-        const httpServer = http.createServer(app);
-        const ioHttp = new Server(httpServer, {
-            cors: { origin: '*', methods: ['GET', 'POST'] }
-        });
-        ioHttp.on('connection', () => {}); // tunnel connections mirror HTTPS io
-
-        httpServer.listen(TUNNEL_PORT, () => {
-            console.log(` 🌍  Public tunnel port  :${TUNNEL_PORT}  (plain HTTP for tunnel proxy)`);
-            console.log(` 🔗  Run:  npx localtunnel --port ${TUNNEL_PORT} --subdomain nexskill`);
-            console.log(`${line}\n`);
-        });
+        }
 
         // ── Daily Push Notification Cron (9:00 AM IST = 3:30 AM UTC) ────
         const cron = require('node-cron');
