@@ -1,0 +1,116 @@
+{
+  "React": {
+    "Beginner": [
+      { "q": "What is JSX in React?", "o": ["A styling framework", "A syntax extension for JavaScript", "A state manager", "A database connector"], "a": 1 },
+      { "q": "How do you define a state variable in a functional React component?", "o": ["useVariable()", "useState()", "createState()", "this.state = {}"], "a": 1 },
+      { "q": "What is the purpose of 'props' in React?", "o": ["To store local component state", "To pass data from parent to child components", "To fetch API data", "To route between pages"], "a": 1 },
+      { "q": "Which hook executes after rendering to handle side effects?", "o": ["useMemo", "useCallback", "useEffect", "useReducer"], "a": 2 },
+      { "q": "What must React component names start with?", "o": ["Uppercase letter", "Lowercase letter", "A dollar sign ($)", "An underscore (_)"], "a": 0 },
+      { "q": "How do you render a list of items in JSX dynamically?", "o": ["Using a for loop", "Using the Array.map() method", "Using while loops", "Using switch statements"], "a": 1 },
+      { "q": "What is the Virtual DOM?", "o": ["A direct copy of the database", "A lightweight in-memory representation of the real DOM", "A browser extension", "An styling interface"], "a": 1 },
+      { "q": "What is the correct way to trigger a state update in React?", "o": ["Directly mutate the state variable", "Use the setState dispatch function returned by useState", "Call forceUpdate()", "Reload the window"], "a": 1 },
+      { "q": "Which key is required for rendering list elements efficiently in React?", "o": ["id", "key", "index", "uid"], "a": 1 },
+      { "q": "What does NPM stand for?", "o": ["Node Package Manager", "New Project Method", "Network Protocol Mode", "Native Package Module"], "a": 0 }
+    ],
+    "Intermediate": [
+      { "q": "What is the correct cleanup mechanism for useEffect hook?", "o": ["Call useEffect.cleanup()", "Return a function from the effect callback", "Call context.destroy()", "Set dependency array to null"], "a": 1 },
+      { "q": "Which hook should you use to memoize a computed value between renders?", "o": ["useMemo", "useCallback", "useRef", "useReducer"], "a": 0 },
+      { "q": "What is React Context used for?", "o": ["Managing database queries", "Global state sharing without prop-drilling", "Injecting inline CSS variables", "Speeding up rendering engine"], "a": 1 },
+      { "q": "What is the difference between useMemo and useCallback?", "o": ["useMemo memoizes values, useCallback memoizes function definitions", "useMemo is asynchronous, useCallback is synchronous", "There is no difference", "useMemo runs on client, useCallback on server"], "a": 0 },
+      { "q": "How does the custom hook name have to start?", "o": ["With any letter", "With 'handle'", "With 'use'", "With 'custom'"], "a": 2 },
+      { "q": "What happens when a component's state updates?", "o": ["The page reloads", "The component and its children re-render", "The database is updated", "The CSS cache is cleared"], "a": 1 },
+      { "q": "How do you access a DOM element directly in functional React?", "o": ["document.getElementById", "Using the useRef hook", "Using the state variable", "Calling retrieveDOM()"], "a": 1 },
+      { "q": "What is the purpose of the dependency array in useEffect?", "o": ["To declare component variables", "To control when the effect re-runs", "To initialize local states", "To link parent components"], "a": 1 },
+      { "q": "What is React.memo used for?", "o": ["To store state locally", "To prevent unnecessary re-renders of functional components based on shallow prop comparisons", "To fetch API details", "To perform calculation operations"], "a": 1 },
+      { "q": "What is prop drilling?", "o": ["Accessing child properties directly", "Passing props down through multiple layers of components that do not need them", "Storing state in local storage", "Extracting values from DOM elements"], "a": 1 }
+    ],
+    "Advanced": [
+      { "q": "What is the core algorithm behind React Fiber?", "o": ["Synchronous rendering blocker", "Incremental reconciliation engine allowing pauses & priorities", "Virtual database compiler", "Global state router"], "a": 1 },
+      { "q": "How do you handle error boundaries in modern React?", "o": ["Wrap blocks in try/catch in functional components", "Create a class component defining static getDerivedStateFromError() or componentDidCatch()", "Use the useError hook", "React handles all errors automatically without crashing"], "a": 1 },
+      { "q": "What is the difference between controlled and uncontrolled inputs?", "o": ["Controlled is managed by React state, Uncontrolled is handled by DOM ref sources", "Controlled is server side, Uncontrolled is client side", "Controlled is secure, Uncontrolled is insecure", "Controlled is faster than uncontrolled"], "a": 0 },
+      { "q": "Which hook is suitable to manage complex state transitions involving sub-values and multiple actions?", "o": ["useMemo", "useContext", "useReducer", "useState"], "a": 2 },
+      { "q": "In concurrent React, what is the purpose of the useTransition hook?", "o": ["To slide routes transition animation", "To defer non-urgent state updates and keep UI responsive", "To switch dark/light mode templates", "To fetch chunked bundle files"], "a": 1 },
+      { "q": "What is hydrateRoot() or hydration in React?", "o": ["Downloading remote images", "Attaching event listeners to server-rendered HTML markup in the client browser", "Allocating RAM for virtual elements", "Removing old unused DOM nodes"], "a": 1 },
+      { "q": "Why shouldn't you define components inside other components' render cycles?", "o": ["React will throw a compiler error immediately", "It creates new component type identities on every render, causing complete unmounts & state losses", "It runs styling layout cycles recursively", "It violates standard naming syntax rules"], "a": 1 },
+      { "q": "What does the useDeferredValue hook do?", "o": ["Delays execution of fetch calls", "Allows you to defer re-rendering a slow part of the UI based on state changes", "Saves values to local storage in background", "Handles lazy-loaded image elements"], "a": 1 },
+      { "q": "What is a major limitation of standard React Context API?", "o": ["It cannot share complex objects", "Any value change forces all consumer components to re-render, even if they only use unchanged properties", "It is disabled in production", "It requires external middleware scripts"], "a": 1 },
+      { "q": "Which of the following is correct regarding React's batching behaviour in v18+?", "o": ["It only batches event handler updates", "It automatically batches updates across timeouts, promises, and native event handlers", "It requires calling flushSync manually for every change", "It has removed batching entirely"], "a": 1 }
+    ]
+  },
+  "Python": {
+    "Beginner": [
+      { "q": "What is the correct syntax to output 'Hello World' in Python?", "o": ["print('Hello World')", "echo('Hello World')", "Console.WriteLine('Hello World')", "printf('Hello World')"], "a": 0 },
+      { "q": "Which of the following is NOT a valid variable name in Python?", "o": ["my_var", "myVar", "2myvar", "_myvar"], "a": 2 },
+      { "q": "How do you create a list in Python?", "o": ["myList = (1, 2, 3)", "myList = [1, 2, 3]", "myList = {1: 'one'}", "myList = '1, 2, 3'"], "a": 1 },
+      { "q": "What is the keyword used to define a function in Python?", "o": ["func", "function", "def", "method"], "a": 2 },
+      { "q": "Which operator is used for exponentiation (power)?", "o": ["^", "**", "*", "//"], "a": 1 },
+      { "q": "What type of loop is best for iterating over elements in a list?", "o": ["do-while loop", "for loop", "while loop", "infinite loop"], "a": 1 },
+      { "q": "How do you start a comment line in Python?", "o": ["// Comment", "/* Comment */", "# Comment", "-- Comment"], "a": 2 },
+      { "q": "Which data type is immutable in Python?", "o": ["List", "Dictionary", "Set", "Tuple"], "a": 3 },
+      { "q": "What does len([1, 2, 3, 4]) return?", "o": ["3", "4", "5", "Error"], "a": 1 },
+      { "q": "How do you insert an element at the end of a list?", "o": ["list.add(item)", "list.append(item)", "list.push(item)", "list.insertLast(item)"], "a": 1 }
+    ],
+    "Intermediate": [
+      { "q": "What is a list comprehension in Python?", "o": ["A tool to check elements types", "A concise way to construct lists from existing sequences", "A sorting algorithm", "A debugging method in standard library"], "a": 1 },
+      { "q": "What does the 'yield' keyword do in a function?", "o": ["Stops function execution permanently", "Turns the function into a generator that returns values lazily", "Imports an external file", "Logs errors to terminal console"], "a": 1 },
+      { "q": "How do you merge two dictionaries in Python 3.5+?", "o": ["dict1 + dict2", "{**dict1, **dict2}", "dict1.merge(dict2)", "dict1 | dict2 (Python 3.9+) or {**dict1, **dict2}"], "a": 3 },
+      { "q": "What is a decorator in Python?", "o": ["A class attribute modifier", "A function that takes another function and extends its behavior without modifying it explicitly", "A styling layout sheet", "A visual debug component"], "a": 1 },
+      { "q": "How do you copy a list by value instead of reference?", "o": ["newList = oldList", "newList = oldList.copy() or oldList[:]", "newList = copy(oldList)", "newList = &oldList"], "a": 1 },
+      { "q": "What is the purpose of *args and **kwargs in functions?", "o": ["To declare constant parameters", "To pass variable numbers of positional and keyword arguments respectively", "To connect database configurations", "To handle thread locking states"], "a": 1 },
+      { "q": "What does the 'is' keyword check in comparison?", "o": ["Value equality", "Object identity (same memory address)", "Variable type", "Length equivalence"], "a": 1 },
+      { "q": "What is the output of [x for x in range(5) if x % 2 == 0]?", "o": ["[1, 3]", "[0, 2, 4]", "[2, 4]", "[0, 1, 2, 3, 4]"], "a": 1 },
+      { "q": "Which module handles standard file paths operations across operating systems?", "o": ["sys", "os.path or pathlib", "io", "fileutils"], "a": 1 },
+      { "q": "What is the difference between a list and a set?", "o": ["List is ordered and allows duplicates, Set is unordered and contains unique values", "List is immutable, Set is mutable", "Set uses square brackets, List uses curly braces", "There is no performance difference between searches"], "a": 0 }
+    ],
+    "Advanced": [
+      { "q": "What is the Global Interpreter Lock (GIL) in Python?", "o": ["A secure user login module", "A mechanism that prevents multiple native threads from executing Python bytecodes at once", "A file system permission lock", "A compiler speed optimizer"], "a": 1 },
+      { "q": "How do you implement a metaclass in Python?", "o": ["By inheriting from class 'object'", "By creating a class that inherits from 'type'", "By declaring decorator functions", "By overriding '__new__' in a standard class"], "a": 1 },
+      { "q": "What is the difference between __new__ and __init__ methods?", "o": ["__new__ allocates the instance object, __init__ initializes it", "__new__ is called after __init__", "__new__ is only for interfaces", "__init__ creates memory allocations"], "a": 0 },
+      { "q": "How can you bypass the GIL for CPU-bound tasks in Python?", "o": ["Use threading module", "Use multiprocessing module or C extensions", "Increase memory buffers size", "Call sys.disable_gil()"], "a": 1 },
+      { "q": "What is a descriptor in Python?", "o": ["A tool to print docstrings", "An object that overrides attribute access methods: __get__, __set__, or __delete__", "A dictionary parser module", "A file descriptor wrapper"], "a": 1 },
+      { "q": "Which built-in module provides high-performance container alternatives like deque, Counter, and OrderedDict?", "o": ["itertools", "collections", "functools", "math"], "a": 1 },
+      { "q": "What does the weakref module do in Python?", "o": ["Speeds up network downloads", "Allows creating references to objects without preventing them from being garbage collected", "Encrypts system passwords", "Deletes variables automatically"], "a": 1 },
+      { "q": "How does Python handle memory management?", "o": ["Manual allocation and deallocation", "Garbage collection using reference counting and a cyclic garbage collector", "Relying on browser engine routines", "Virtual stack execution cycles"], "a": 1 },
+      { "q": "What is the purpose of the '__slots__' attribute in classes?", "o": ["To declare private variables", "To restrict attributes list and optimize memory by preventing instance dictionary __dict__ creation", "To write database schemas", "To enable dynamic inheritance trees"], "a": 1 },
+      { "q": "What does functools.lru_cache do?", "o": ["Deletes cache files from disk", "Wraps a function with a memoizing callable that saves up to a maxsize of recent calls results", "Handles API call loops", "Loads images into RAM"], "a": 1 }
+    ]
+  },
+  "Figma": {
+    "Beginner": [
+      { "q": "What is the primary coordinate canvas container in Figma?", "o": ["Group", "Frame", "Artboard", "Canvas Board"], "a": 1 },
+      { "q": "How do you create a reusable UI element in Figma?", "o": ["Group it and color it", "Convert it to a Component (Ctrl+Alt+K)", "Export as PNG and re-import", "Save to desktop templates"], "a": 1 },
+      { "q": "Which tool is used to draw custom vector shapes in Figma?", "o": ["Rectangle Tool", "Pen Tool", "Slice Tool", "Brush Tool"], "a": 1 },
+      { "q": "What is Auto Layout in Figma?", "o": ["A tool to auto-align layers grid", "A feature that allows frames to grow or shrink dynamically with contents size changes", "An auto-saving script", "An image optimizer"], "a": 1 },
+      { "q": "What happens when you edit a Master Component?", "o": ["Only the master updates", "All component Instances receive the updates automatically", "You get a file error", "Figma prompts to rename instances"], "a": 1 },
+      { "q": "How do you preview your prototype designs in interactive mode?", "o": ["Click 'Share'", "Click the 'Present' play button (or Ctrl+Alt+Enter)", "Export to PDF", "Copy link to slack"], "a": 1 },
+      { "q": "Which panel controls dimensions, alignment, and constraints?", "o": ["Layers panel", "Design panel (right side)", "Assets panel", "Prototype panel"], "a": 1 },
+      { "q": "What are constraints used for?", "o": ["Limiting layer colors selection", "Defining how layers stretch or pin relative to their parent frames when resized", "Locking files from editing", "Enforcing font hierarchies"], "a": 1 },
+      { "q": "How do you import images into Figma canvas?", "o": ["Drag & drop, or Ctrl+Shift+K", "Use file import scripting tool", "Convert images to SVG first", "Draw with brush tool"], "a": 0 },
+      { "q": "What is a Style in Figma?", "o": ["An animation property transition", "A saved configuration of color, text, grid, or shadow that can be reapplied globally", "A folder organizer", "A CSS export template"], "a": 1 }
+    ],
+    "Intermediate": [
+      { "q": "What are Variants in Figma?", "o": ["Alternative project files versions", "A way to group related component states (e.g. Hover, Pressed) inside a single component set", "Different screen size frameworks", "A script to import random content"], "a": 1 },
+      { "q": "How does 'Space Between' work in Auto Layout?", "o": ["It adds manual padding size values", "It distributes elements evenly within the frame stretching gaps dynamically", "It adds white boxes in gaps", "It groups elements on edges"], "a": 1 },
+      { "q": "What is the difference between Hug Contents and Fill Container in Auto Layout?", "o": ["Hug shrinks to wrap elements; Fill stretches to match parent frame size", "Hug stretches; Fill shrinks", "There is no difference", "Hug is vertical, Fill is horizontal"], "a": 0 },
+      { "q": "What is a Component Instance?", "o": ["A backup duplicate copy", "A child copy linked to the Master component that inherits edits", "A single page inside file", "An exported SVG asset"], "a": 1 },
+      { "q": "What are Local Styles?", "o": ["Browser cache settings", "Color, text, or effects templates created locally inside the active file", "Styles loaded from external plugins", "CSS style sheets definitions"], "a": 1 },
+      { "q": "How do you animate transitions between prototyping frames smoothly?", "o": ["Use GIF images", "Use Smart Animate setting in transition triggers", "Write Javascript timeline code", "Create 10 intermediate pages"], "a": 1 },
+      { "q": "What does the 'Clip Content' option do on a frame?", "o": ["Deletes extra items", "Hides child elements that extend beyond the frame boundary dimensions", "Copies text values", "Generates preview links"], "a": 1 },
+      { "q": "How do you override a text layer inside a component instance?", "o": ["You must detach the component first", "Double click the text layer in the instance and edit the string directly", "Modify it in master file only", "Delete the component instance"], "a": 1 },
+      { "q": "What is Figma's 'Team Library' feature?", "o": ["A place to list user names", "A shared repository of components and styles accessible across team files", "A folder of design PDFs", "A project timeline calendar"], "a": 1 },
+      { "q": "Which boolean operations are available to combine shapes?", "o": ["Add, Subtract, Divide", "Union, Subtract, Intersect, Exclude Selection", "Merge, Join, Clear", "Overlay, Multiply, Screen"], "a": 1 }
+    ],
+    "Advanced": [
+      { "q": "How do you build a highly scalable Design System in Figma?", "o": ["Put all layers in one frame", "Utilize Variables, Component Properties, and Variants with semantic styles", "Export code to CSS and reimport", "Create separate files for every button"], "a": 1 },
+      { "q": "What are 'Variables' in Figma (introduced in 2023)?", "o": ["Programming code snippets", "Objects that store values (colors, numbers, strings, booleans) to support multiple styling modes/themes", "Mathematical vectors formulas", "Dynamic plugin components"], "a": 1 },
+      { "q": "How do you construct a nested component that communicates property changes up to a parent?", "o": ["Detach nested instances and recombine", "Expose nested instance properties inside the parent component's settings menu", "Write API calls between frames", "Write custom javascript code"], "a": 1 },
+      { "q": "What are the rules of auto-layout absolute positioning?", "o": ["It is not possible in auto layout", "Excludes the child element from the layout flow while keeping it inside parent frame coordinates", "Pins element to top left of viewport only", "Converts the parent frame to a group"], "a": 1 },
+      { "q": "How can you simulate a complex scrollable panel with sticky headers in prototypes?", "o": ["Create multiple duplicated frames for each scroll section", "Set position to 'Scroll with parent' vs 'Fixed (Stay in place)' inside an overflow-scroll frame", "Use external custom code widgets", "It is currently impossible"], "a": 1 },
+      { "q": "What are Component Properties in Figma?", "o": ["Metadata details like author name", "Custom controls (Boolean, Instance Swap, Text, Variant) bound to layer attributes inside master components", "The width and height dimensions", "CSS code representations"], "a": 1 },
+      { "q": "How do you map Figma Variables to support automatic Light and Dark mode swaps?", "o": ["Use external theme plugins for each component copy", "Create variable collections with separate Modes columns mapping colors to semantic tokens", "Rename all layers with '_dark' tags", "Copy the entire screen and color manually"], "a": 1 },
+      { "q": "Which tool allows Figma designs to align with code design tokens values?", "o": ["Plugin libraries matching token JSON formats with Variables", "Image exporting tools", "The pen tool vector networks", "Component instance properties panel"], "a": 0 },
+      { "q": "What is the key advantage of using Figma Section containers in layouts?", "o": ["They color frames automatically", "They bundle related screens for developer handoff and support individual prototype state memory paths", "They load files faster", "They compress large images formats"], "a": 1 },
+      { "q": "How can you trigger state interactions between nested variables in prototypes?", "o": ["Use advanced prototype scripts with set-variable expressions and conditional statements", "Duplicate frames multiple times", "You cannot use logic in prototyping cycles", "Write database query nodes"], "a": 0 }
+    ]
+  }
+}

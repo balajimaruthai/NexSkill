@@ -1,0 +1,15 @@
+node_modules/
+database.sqlite
+.env
+
+# SSL certificates (auto-generated, never commit private keys)
+ssl/
+
+# Large binaries & logs
+cloudflared.exe
+platform.log
+
+# Nested git repositories (separate projects)
+Nexskill.in/
+Nxtskill.in/
+

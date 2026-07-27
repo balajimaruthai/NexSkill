@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexSkill - Admin Control Center</title>
+    <meta name="description" content="NexSkill Admin Control Center - Platform management and monitoring">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Main Style (shared variables) & Custom Admin Style -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <!-- App Background Glows -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+
+    <!-- ================= 1. ADMIN LOGIN PANEL ================= -->
+    <div id="admin-login-view" class="admin-auth-container">
+        <div class="admin-auth-card">
+            <div class="logo">
+                <i data-lucide="shield-alert" class="logo-icon"></i>
+                <span class="logo-text">Admin Portal</span>
+                <span class="logo-subtext">NexSkill Authorized Access</span>
+            </div>
+            
+            <form id="admin-login-form" onsubmit="handleAdminLogin(event)">
+                <div class="form-group">
+                    <label for="admin-login-email">Email Address</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="mail"></i>
+                        <input type="email" id="admin-login-email" required placeholder="admin@domain.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="admin-login-password">Password</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="lock"></i>
+                        <input type="password" id="admin-login-password" required placeholder="••••••••">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    <span>Authenticate Admin</span>
+                    <i data-lucide="arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= 2. MAIN ADMIN PORTAL LAYOUT ================= -->
+    <div id="admin-portal-view" class="admin-layout hidden">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar">
+            <div class="logo">
+                <i data-lucide="shuffle" class="logo-icon"></i>
+                <span>SkillSwap<span class="admin-badge">Admin</span></span>
+            </div>
+
+            <nav class="admin-nav">
+                <button class="admin-nav-item active" onclick="switchTab('overview')">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Overview</span>
+                </button>
+                <button class="admin-nav-item" onclick="switchTab('users')">
+                    <i data-lucide="users"></i>
+                    <span>User Management</span>
+                </button>
+                <button class="admin-nav-item" onclick="switchTab('mcqs')">
+                    <i data-lucide="cpu"></i>
+                    <span>Assessment MCQs</span>
+                </button>
+                <button class="admin-nav-item" onclick="switchTab('requests')">
+                    <i data-lucide="git-pull-request"></i>
+                    <span>Swap Requests</span>
+                </button>
+                <button class="admin-nav-item" onclick="switchTab('meetings')">
+                    <i data-lucide="calendar"></i>
+                    <span>Sessions & Meetings</span>
+                </button>
+            </nav>
+
+            <div class="admin-sidebar-footer">
+                <div class="admin-user-profile">
+                    <img id="admin-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Admin Profile" class="admin-user-avatar">
+                    <div class="admin-user-info">
+                        <span id="admin-name" class="admin-user-name">Loading...</span>
+                        <span class="admin-user-role">Super Administrator</span>
+                    </div>
+                </div>
+                <a href="/" class="admin-nav-item" style="padding-left: 0.5rem;">
+                    <i data-lucide="home"></i>
+                    <span>User Dashboard</span>
+                </a>
+                <button class="admin-nav-item" onclick="handleAdminLogout()" style="padding-left: 0.5rem; color: #f87171;">
+                    <i data-lucide="log-out"></i>
+                    <span>Sign Out</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="admin-main">
+            <!-- Header bar -->
+            <header class="admin-header">
+                <div class="admin-header-title">
+                    <h1 id="view-title">Overview</h1>
+                    <p id="view-subtitle">NexSkill Administrative Statistics & Metrics</p>
+                </div>
+                <div class="admin-view-tag">
+                    <i data-lucide="activity" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px; display: inline;"></i>
+                    <span>Live Monitoring</span>
+                </div>
+            </header>
+
+            <!-- ================= VIEW: OVERVIEW ================= -->
+            <section id="view-overview" class="admin-tab-view">
+                <div class="admin-stats-row">
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon blue">
+                            <i data-lucide="users-2"></i>
+                        </div>
+                        <div class="admin-stat-details">
+                            <h3 class="admin-stat-value" id="stat-total-users">0</h3>
+                            <span class="admin-stat-label">Total Users</span>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon purple">
+                            <i data-lucide="shield-check"></i>
+                        </div>
+                        <div class="admin-stat-details">
+                            <h3 class="admin-stat-value" id="stat-avg-trust">0</h3>
+                            <span class="admin-stat-label">Avg Trust Rating</span>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon green">
+                            <i data-lucide="coins"></i>
+                        </div>
+                        <div class="admin-stat-details">
+                            <h3 class="admin-stat-value" id="stat-total-credits">0</h3>
+                            <span class="admin-stat-label">Credits Circulated</span>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon yellow">
+                            <i data-lucide="git-pull-request"></i>
+                        </div>
+                        <div class="admin-stat-details">
+                            <h3 class="admin-stat-value" id="stat-total-requests">0</h3>
+                            <span class="admin-stat-label">Swap Requests</span>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon pink">
+                            <i data-lucide="video"></i>
+                        </div>
+                        <div class="admin-stat-details">
+                            <h3 class="admin-stat-value" id="stat-total-meetings">0</h3>
+                            <span class="admin-stat-label">Sessions Booked</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-grid mt-4">
+                    <div class="admin-card col-span-3" style="grid-column: span 3;">
+                        <div class="admin-card-header">
+                            <h3><i data-lucide="trending-up" class="text-primary"></i> Administrative Controls & Diagnostics</h3>
+                        </div>
+                        <div class="admin-card-body" style="padding: 1.5rem 2rem;">
+                            <p class="small-info text-secondary">You are logged into the separate Admin Portal. You have write-access controls to override credit balances, moderate user records, manage mock assessment questions, and cancel scheduled sessions.</p>
+                            
+                            <div class="admin-diagnostics-grid mt-3" style="display:grid; grid-template-columns: 1fr 2fr; gap:20px;">
+                                <div>
+                                    <h4 class="mb-2" style="font-size: 0.9rem; color: var(--color-primary);">System Diagnostics</h4>
+                                    <table class="admin-table" style="font-size:0.8rem;">
+                                        <tbody>
+                                            <tr><td>OS Platform</td><td id="diag-os">-</td></tr>
+                                            <tr><td>Node Engine</td><td id="diag-node">-</td></tr>
+                                            <tr><td>Uptime</td><td id="diag-uptime">-</td></tr>
+                                            <tr><td>Heap Memory</td><td id="diag-memory">-</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div>
+                                    <h4 class="mb-2" style="font-size: 0.9rem; color: var(--color-primary);">Security Audit Logs</h4>
+                                    <div style="max-height: 200px; overflow-y:auto; border:1px solid var(--border-color); border-radius:4px; padding:8px;">
+                                        <table class="admin-table" style="font-size:0.8rem;">
+                                            <thead>
+                                                <tr><th>Timestamp</th><th>User</th><th>Action</th></tr>
+                                            </thead>
+                                            <tbody id="admin-audit-logs">
+                                                <!-- Dynamic audit logs -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW: USERS ================= -->
+            <section id="view-users" class="admin-tab-view hidden">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div style="display: flex; gap: 1rem; align-items: center; flex: 1;">
+                            <div class="input-wrapper" style="max-width: 320px; margin-bottom: 0;">
+                                <i data-lucide="search"></i>
+                                <input type="text" id="user-search" placeholder="Search by name, email or studied info..." oninput="filterUsersTable()" style="padding: 10px 12px 10px 38px;">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-small" onclick="openAddUserModal()">
+                            <i data-lucide="plus-circle"></i>
+                            <span>Add New User</span>
+                        </button>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="table-responsive">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>User Info</th>
+                                        <th>Location & Study</th>
+                                        <th>Role</th>
+                                        <th>Skills</th>
+                                        <th>Credits & Trust</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="users-table-body">
+                                    <!-- Dynamic Rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW: MCQS ================= -->
+            <section id="view-mcqs" class="admin-tab-view hidden">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <div class="input-wrapper">
+                                    <i data-lucide="award"></i>
+                                    <select id="mcq-filter-skill" onchange="renderMCQs()" style="padding: 8px 12px 8px 36px; min-width: 180px;">
+                                        <!-- Skill Tracks list -->
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <div class="input-wrapper">
+                                    <i data-lucide="bar-chart-2"></i>
+                                    <select id="mcq-filter-difficulty" onchange="renderMCQs()" style="padding: 8px 12px 8px 36px;">
+                                        <option value="Beginner">Beginner</option>
+                                        <option value="Intermediate">Intermediate</option>
+                                        <option value="Advanced">Advanced</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary btn-small" onclick="openAddSkillModal()">
+                                <i data-lucide="plus"></i>
+                                <span>Create Skill Track</span>
+                            </button>
+                            <button class="btn btn-primary btn-small" onclick="openAddMCQModal()">
+                                <i data-lucide="plus-circle"></i>
+                                <span>Add MCQ Question</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="admin-card-body">
+                        <div id="mcq-list-container" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                            <!-- Dynamic MCQ list -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW: SWAP REQUESTS ================= -->
+            <section id="view-requests" class="admin-tab-view hidden">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3><i data-lucide="git-pull-request" class="text-primary"></i> Swap Request Records</h3>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="table-responsive">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Sender</th>
+                                        <th>Receiver</th>
+                                        <th>Skill Exchanged</th>
+                                        <th>Status</th>
+                                        <th>Created Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="requests-table-body">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW: MEETINGS ================= -->
+            <section id="view-meetings" class="admin-tab-view hidden">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3><i data-lucide="calendar" class="text-primary"></i> Scheduled Sessions & Meetings</h3>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="table-responsive">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Sender (Teacher)</th>
+                                        <th>Receiver (Learner)</th>
+                                        <th>Skill</th>
+                                        <th>Date & Time</th>
+                                        <th>Google Meet Link</th>
+                                        <th>Status</th>
+                                        <th>Rating & Feedback</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="meetings-table-body">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- Add/Edit User Modal -->
+    <div id="user-modal" class="modal-backdrop hidden">
+        <div class="modal-card max-w-xl">
+            <div class="modal-header">
+                <h3 id="user-modal-title">Add New Platform Account</h3>
+                <button class="btn-close" onclick="closeUserModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="user-form" onsubmit="handleUserSubmit(event)">
+                    <input type="hidden" id="user-id">
+                    <input type="hidden" id="user-edit-email-key">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="user-name">Full Name</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="user"></i>
+                                <input type="text" id="user-name" required placeholder="John Doe">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-email">Email Address</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="mail"></i>
+                                <input type="email" id="user-email" required placeholder="john@example.com">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="user-password" id="user-password-label">Password</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="lock"></i>
+                                <input type="password" id="user-password" required placeholder="••••••••">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-role">Role</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="user-check"></i>
+                                <select id="user-role" required>
+                                    <option value="User">User (Standard)</option>
+                                    <option value="Admin">Admin</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user-study">Field of Study / Background</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="book-open"></i>
+                            <input type="text" id="user-study" required placeholder="B.S. Computer Science (Stanford)">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="user-city">City</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="map-pin"></i>
+                                <input type="text" id="user-city" required placeholder="San Jose">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-state">State / Province</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="map"></i>
+                                <input type="text" id="user-state" required placeholder="California">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="user-credits">Credit Balance</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="coins"></i>
+                                <input type="number" id="user-credits" required min="0" placeholder="50">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-trust">Trust Rating (0 - 900)</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="shield"></i>
+                                <input type="number" id="user-trust" required min="0" max="900" placeholder="750">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user-languages">Languages Known (comma separated)</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="languages"></i>
+                            <input type="text" id="user-languages" placeholder="English, Spanish">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="user-offer">Skills to Teach (comma separated)</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="award"></i>
+                                <input type="text" id="user-offer" placeholder="React, HTML, CSS">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-learn">Skills to Learn (comma separated)</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="trending-up"></i>
+                                <input type="text" id="user-learn" placeholder="Python, SQL">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeUserModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <span id="user-submit-btn-text">Add Account</span>
+                            <i data-lucide="check"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Skill category Modal -->
+    <div id="skill-modal" class="modal-backdrop hidden">
+        <div class="modal-card max-w-sm">
+            <div class="modal-header">
+                <h3>Create New Skill Category</h3>
+                <button class="btn-close" onclick="closeAddSkillModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="skill-form" onsubmit="handleSkillSubmit(event)">
+                    <div class="form-group">
+                        <label for="skill-name">Skill Track Name</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="award"></i>
+                            <input type="text" id="skill-name" required placeholder="e.g. Docker, AWS, Node.js">
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeAddSkillModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <span>Create Track</span>
+                            <i data-lucide="plus-circle"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit MCQ question Modal -->
+    <div id="mcq-modal" class="modal-backdrop hidden">
+        <div class="modal-card max-w-xl">
+            <div class="modal-header">
+                <h3 id="mcq-modal-title">Add MCQ Interview Question</h3>
+                <button class="btn-close" onclick="closeAddMCQModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="mcq-form" onsubmit="handleMCQSubmit(event)">
+                    <input type="hidden" id="mcq-index">
+                    
+                    <div class="form-group">
+                        <label for="mcq-q">Question Prompt</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="help-circle" style="top: 14px;"></i>
+                            <textarea id="mcq-q" required rows="2" placeholder="e.g. What is a key-value store database?" style="padding-left: 42px;"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Multiple Choice Options</label>
+                        <div class="form-row mb-3">
+                            <div class="form-group mb-0">
+                                <label for="mcq-o0" style="font-size: 0.7rem; color: var(--text-muted);">Option 1 (Index 0)</label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="mcq-o0" required placeholder="Option 1" style="padding-left: 14px;">
+                                </div>
+                            </div>
+                            <div class="form-group mb-0">
+                                <label for="mcq-o1" style="font-size: 0.7rem; color: var(--text-muted);">Option 2 (Index 1)</label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="mcq-o1" required placeholder="Option 2" style="padding-left: 14px;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group mb-0">
+                                <label for="mcq-o2" style="font-size: 0.7rem; color: var(--text-muted);">Option 3 (Index 2)</label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="mcq-o2" required placeholder="Option 3" style="padding-left: 14px;">
+                                </div>
+                            </div>
+                            <div class="form-group mb-0">
+                                <label for="mcq-o3" style="font-size: 0.7rem; color: var(--text-muted);">Option 4 (Index 3)</label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="mcq-o3" required placeholder="Option 4" style="padding-left: 14px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mcq-a">Correct Option Answer</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="check-circle-2"></i>
+                            <select id="mcq-a" required>
+                                <option value="0">Option 1 (Index 0)</option>
+                                <option value="1">Option 2 (Index 1)</option>
+                                <option value="2">Option 3 (Index 2)</option>
+                                <option value="3">Option 4 (Index 3)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeAddMCQModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <span id="mcq-submit-btn-text">Save Question</span>
+                            <i data-lucide="check"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Meeting Modal -->
+    <div id="meeting-modal" class="modal-backdrop hidden">
+        <div class="modal-card max-w-xl">
+            <div class="modal-header">
+                <h3>Edit Session Details</h3>
+                <button class="btn-close" onclick="closeMeetingModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="meeting-form" onsubmit="handleMeetingSubmit(event)">
+                    <input type="hidden" id="meeting-id">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="meeting-date">Date</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="calendar"></i>
+                                <input type="date" id="meeting-date" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="meeting-time">Time</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="clock"></i>
+                                <input type="time" id="meeting-time" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="meeting-meetLink">Google Meet Link</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="link"></i>
+                            <input type="url" id="meeting-meetLink" required placeholder="https://meet.google.com/abc-defg-hij">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="meeting-status">Session Status</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="info"></i>
+                            <select id="meeting-status" required>
+                                <option value="scheduled">Scheduled</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeMeetingModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <span>Save Changes</span>
+                            <i data-lucide="check"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-notification" class="toast hidden">
+        <i data-lucide="check-circle" id="toast-icon"></i>
+        <span id="toast-msg">Success Message here</span>
+    </div>
+
+    <!-- Admin JS logic -->
+    <script src="admin.js"></script>
+</body>
+</html>

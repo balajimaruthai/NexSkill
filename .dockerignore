@@ -1,0 +1,8 @@
+node_modules
+npm-debug.log
+platform.log
+database.sqlite
+.git
+.gemini
+Dockerfile
+.dockerignore

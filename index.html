@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexSkill - Peer Skill Exchange & AI Verification</title>
+    <meta name="description" content="NexSkill — the premium peer skill exchange platform. Trade skills, grow together, and accelerate your career with AI-powered matching.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Socket.io Client -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- PWA Manifest & Icons -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    <meta name="theme-color" content="#7c3aed">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="NexSkill">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- App Background Glows -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+
+    <!-- ================= 1. DUAL COLUMN AUTH LAYOUT ================= -->
+    <div id="auth-container" class="auth-split-wrapper">
+        <div class="showcase-column">
+            <div class="showcase-content">
+                <div class="logo mb-4">
+                    <i data-lucide="shuffle" class="logo-icon"></i>
+                    <span>Nex<span class="premium-badge">Skill</span></span>
+                </div>
+                <h1 class="showcase-title">The Premium Skill Exchange for Rising Professionals.</h1>
+                <p class="showcase-desc">Swap skills with industry specialists, attend verified 1-on-1 virtual sessions, and validate your credentials using advanced AI mock evaluations.</p>
+                
+                <div class="showcase-stats">
+                    <div class="showcase-stat-card">
+                        <h3>10,240+</h3>
+                        <p>Active Users</p>
+                    </div>
+                    <div class="showcase-stat-card">
+                        <h3>94.8%</h3>
+                        <p>AI Assessment Accuracy</p>
+                    </div>
+                    <div class="showcase-stat-card">
+                        <h3>4.9 ★</h3>
+                        <p>Average Peer Rating</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="auth-column">
+            <div class="auth-card" id="auth-forms-wrapper">
+                <!-- Tabs -->
+                <div class="auth-tabs" id="auth-navigation-tabs">
+                    <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
+                    <button class="auth-tab" onclick="switchAuthTab('register')">Register Account</button>
+                </div>
+
+                <!-- Sign In Form -->
+                <form id="login-form" class="auth-form active-form" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="login-email">Email Address</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="mail"></i>
+                            <input type="email" id="login-email" required placeholder="you@domain.com">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="lock"></i>
+                            <input type="password" id="login-password" required placeholder="••••••••">
+                        </div>
+                    </div>
+                    <div class="auth-helpers" style="display: flex; justify-content: flex-end; margin-bottom: 1.25rem;">
+                        <button type="button" class="link-btn" onclick="showForgotPasswordForm()" style="font-size: 0.85rem;">Forgot password?</button>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <span>Sign In to Dashboard</span>
+                        <i data-lucide="arrow-right"></i>
+                    </button>
+                </form>
+
+                <!-- Registration Form -->
+                <form id="register-form" class="auth-form" onsubmit="handleRegister(event)">
+                    <div class="form-group text-center photo-uploader-group">
+                        <label>Profile Picture</label>
+                        <div class="photo-preview-container">
+                            <img id="reg-photo-preview" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Avatar preview">
+                            <div class="upload-overlay">
+                                <i data-lucide="camera"></i>
+                                <input type="file" id="reg-photo" accept="image/*" onchange="previewPhoto(this, 'reg-photo-preview')">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="reg-name">Full Name</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="user"></i>
+                                <input type="text" id="reg-name" required placeholder="Jane Smith">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-email">Email Address</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="mail"></i>
+                                <input type="email" id="reg-email" required placeholder="jane@domain.com">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="reg-password">Password</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="lock"></i>
+                                <input type="password" id="reg-password" required placeholder="••••••••">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-study">What did you study?</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="book-open"></i>
+                                <input type="text" id="reg-study" required placeholder="M.Tech CSE, UI Design, etc.">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="reg-city">Place / City</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="map-pin"></i>
+                                <input type="text" id="reg-city" required placeholder="New York">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-state">State</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="map"></i>
+                                <input type="text" id="reg-state" required placeholder="NY">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reg-languages">Languages Known (comma separated)</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="languages"></i>
+                            <input type="text" id="reg-languages" required placeholder="English, Spanish">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="reg-skills-offer">Skills You Teach</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="award"></i>
+                                <input type="text" id="reg-skills-offer" required placeholder="HTML, Figma, Figma Design">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-skills-learn">Skills You Learn</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="trending-up"></i>
+                                <input type="text" id="reg-skills-learn" required placeholder="Python, SQL, React">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block mt-3">
+                        <span>Create Platform Profile</span>
+                        <i data-lucide="check"></i>
+                    </button>
+                </form>
+
+                <!-- OTP Verification Pane -->
+                <div id="otp-panel" class="auth-panel hidden">
+                    <div class="auth-header">
+                        <h2>Verify Your Email</h2>
+                        <p>We have sent a 6-digit OTP verification code to <strong id="verification-target-email">jane@domain.com</strong>.</p>
+                    </div>
+                    <form id="otp-form" onsubmit="handleOTPVerify(event)">
+                        <div class="form-group">
+                            <label for="otp-code">Verification Code</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="shield-check"></i>
+                                <input type="text" id="otp-code" required maxlength="6" placeholder="123456" style="letter-spacing: 4px; font-weight: 700; text-align: center;">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <span>Confirm & Activate Account</span>
+                            <i data-lucide="check-circle"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Forgot Password Pane -->
+                <div id="forgot-password-panel" class="auth-panel hidden">
+                    <div class="auth-header">
+                        <h2>Recover Account</h2>
+                        <p>Enter your registered email address to receive password recovery authorization.</p>
+                    </div>
+                    <form id="forgot-form" onsubmit="handleForgotSubmit(event)">
+                        <div class="form-group">
+                            <label for="forgot-email">Email Address</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="mail"></i>
+                                <input type="email" id="forgot-email" required placeholder="you@domain.com">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <span>Send Recovery Request</span>
+                            <i data-lucide="send"></i>
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-block mt-2" onclick="showAuthForms()">Cancel</button>
+                    </form>
+                </div>
+
+                <!-- Reset Password Pane -->
+                <div id="reset-password-panel" class="auth-panel hidden">
+                    <div class="auth-header">
+                        <h2>Reset Password</h2>
+                        <p>Enter the OTP reset code and configure a secure new password for your account.</p>
+                    </div>
+                    <form id="reset-form" onsubmit="handleResetSubmit(event)">
+                        <input type="hidden" id="reset-email">
+                        <div class="form-group">
+                            <label for="reset-code">Reset OTP Code</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="shield-alert"></i>
+                                <input type="text" id="reset-code" required placeholder="123456" style="text-align: center; font-weight: 700;">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="reset-new-password">New Secure Password</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="lock"></i>
+                                <input type="password" id="reset-new-password" required placeholder="••••••••">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <span>Change Password</span>
+                            <i data-lucide="check"></i>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 2. MAIN CORE APPLICATION LAYOUT ================= -->
+    <div id="app-shell" class="app-layout hidden">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i data-lucide="shuffle" class="logo-icon"></i>
+                <span>Nex<span class="premium-badge">Skill</span></span>
+            </div>
+
+            <!-- Profile Info in Sidebar -->
+            <div class="user-profile-badge">
+                <div class="avatar-wrapper">
+                    <img id="sidebar-avatar" src="" alt="Avatar" class="avatar hidden">
+                    <div id="sidebar-avatar-initials" class="avatar-placeholder">??</div>
+                </div>
+                <div class="profile-details">
+                    <span class="name" id="sidebar-name">Loading...</span>
+                    <span class="role" id="sidebar-role">Level 1 Student</span>
+                </div>
+            </div>
+
+            <!-- Push Notification Permission Banner -->
+            <div id="push-permission-banner" class="push-banner hidden">
+                <i data-lucide="bell" style="width:14px; height:14px; flex-shrink:0;"></i>
+                <span style="flex:1; font-size:0.8rem;">Enable daily reminders</span>
+                <button class="btn-small-push" onclick="requestPushPermission()" id="push-enable-btn">Enable</button>
+                <button onclick="dismissPushBanner()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; padding:0; margin-left:4px;"><i data-lucide="x" style="width:12px;height:12px;"></i></button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-tab="home" onclick="showTab('home')">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard Overview</span>
+                </button>
+                <button class="nav-item" data-tab="discover" onclick="showTab('discover')">
+                    <i data-lucide="search"></i>
+                    <span>Discover Partners</span>
+                </button>
+                <button class="nav-item" data-tab="chat" onclick="showTab('chat')">
+                    <i data-lucide="message-square"></i>
+                    <span>SaaS Chat Room</span>
+                    <span class="badge badge-accent hidden" id="chat-badge-count">0</span>
+                </button>
+                <button class="nav-item" data-tab="meetings" onclick="showTab('meetings')">
+                    <i data-lucide="calendar"></i>
+                    <span>Sessions & Schedule</span>
+                    <span class="badge" id="meetings-badge-count">0</span>
+                </button>
+                <button class="nav-item" data-tab="roadmap" onclick="showTab('roadmap')">
+                    <i data-lucide="map"></i>
+                    <span>AI Roadmap Planner</span>
+                </button>
+                <button class="nav-item" data-tab="assessment" onclick="showTab('assessment')">
+                    <i data-lucide="cpu"></i>
+                    <span>AI MCQ Assessment</span>
+                </button>
+                <button class="nav-item" data-tab="profile" onclick="showTab('profile')">
+                    <i data-lucide="sliders"></i>
+                    <span>Manage Profile</span>
+                </button>
+                <button class="nav-item" data-tab="leaderboard" onclick="showTab('leaderboard')">
+                    <i data-lucide="trophy"></i>
+                    <span>Leaderboard</span>
+                </button>
+                <button class="nav-item" data-tab="forum" onclick="showTab('forum')">
+                    <i data-lucide="messages-square"></i>
+                    <span>Community Forum</span>
+                </button>
+                
+                <!-- Standalone Admin link (unhidden dynamically for Admin) -->
+                <a href="/admin" class="nav-item hidden" id="nav-admin-portal" target="_blank">
+                    <i data-lucide="shield-check"></i>
+                    <span>Admin Portal</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="btn btn-ghost btn-block" onclick="handleLogout()">
+                    <i data-lucide="log-out"></i>
+                    <span>Log Out</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Mobile sidebar overlay -->
+        <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+        <!-- Main Content Pane -->
+        <main class="main-content">
+            <header class="app-header">
+                <div class="header-left" style="display:flex;align-items:center;gap:12px;">
+                    <button class="mobile-menu-toggle" onclick="toggleSidebar()" aria-label="Toggle menu">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <div>
+                        <h1 id="view-title">Dashboard Overview</h1>
+                        <p class="text-secondary" id="view-subtitle">Welcome back to your skill acceleration center.</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="metric-chip">
+                        <i data-lucide="coins" class="text-warning"></i>
+                        <span>Credits: <strong id="user-credits">50</strong></span>
+                    </div>
+                    <div class="metric-chip">
+                        <i data-lucide="shield" class="text-success"></i>
+                        <span>Trust Score: <strong id="user-trust-score">750</strong></span>
+                    </div>
+                    <div class="metric-chip">
+                        <i data-lucide="zap" class="text-primary"></i>
+                        <span>XP: <strong id="user-xp">100</strong></span>
+                    </div>
+                    <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle theme">
+                        <i data-lucide="moon" id="theme-toggle-icon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- ================= VIEW: HOME / OVERVIEW ================= -->
+            <section id="view-home" class="tab-view active">
+                <!-- 1. Onboarding Checklist Panel (shown dynamically) -->
+                <div class="card mb-4 hidden" id="onboarding-card">
+                    <div class="card-header">
+                        <h3><i data-lucide="award" class="text-primary"></i> Onboarding Checklist</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="checklist-items">
+                            <li id="chk-verify" class="checklist-item"><i data-lucide="circle"></i> Email verification complete (+20 Credits)</li>
+                            <li id="chk-exam" class="checklist-item"><i data-lucide="circle"></i> Complete general tech entry exam (+20 Credits, +30 Trust)</li>
+                            <li id="chk-profile" class="checklist-item"><i data-lucide="circle"></i> Customize profile with learning goals</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Gamification Overview Row -->
+                <div class="stats-row mb-4">
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper purple">
+                            <i data-lucide="flame"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">Active Streak</span>
+                            <h3 id="gamification-streak">0 Days</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper blue">
+                            <i data-lucide="star"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">Unlocked Badges</span>
+                            <h3 id="gamification-badges">0 Badges</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper green">
+                            <i data-lucide="check-square"></i>
+                        </div>
+                        <div class="stat-details">
+                            <span class="stat-label">Daily Goal Tasks</span>
+                            <h3 id="gamification-goals">0 / 3 Done</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Dashboard Layout Grid -->
+                <div class="dashboard-grid">
+                    <!-- Column 1: Recommendations -->
+                    <div class="col-span-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="header-title">
+                                    <i data-lucide="sparkles" class="text-primary"></i>
+                                    <h3>AI Matchmaker Heuristics</h3>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="recs-loading" class="skeleton-wrapper">
+                                    <div class="skeleton skeleton-title"></div>
+                                    <div class="skeleton skeleton-text"></div>
+                                    <div class="skeleton skeleton-text"></div>
+                                </div>
+                                <div id="recs-list" class="recommended-peers-grid hidden">
+                                    <!-- Recommended profiles mapped dynamically -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Local AI Career Center Panel -->
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h3><i data-lucide="briefcase" class="text-primary"></i> AI Career Center</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="auth-tabs" id="career-center-tabs" style="margin-bottom: 1rem;">
+                                    <button class="auth-tab active" onclick="switchCareerSubTab('ats')">ATS Resume Checker</button>
+                                    <button class="auth-tab" onclick="switchCareerSubTab('interview')">AI Mock Interview</button>
+                                </div>
+
+                                <!-- Career Subview 1: Resume Checker -->
+                                <div id="career-sub-ats" class="career-pane">
+                                    <p class="small-info mb-3">Copy & paste your resume details below to calculate keyword densities and score against target skills.</p>
+                                    <div class="form-group">
+                                        <label for="career-ats-skill">Target Skill Keyword</label>
+                                        <select id="career-ats-skill" class="form-control" style="width: 100%; max-width: 280px; margin-bottom: 12px; padding: 6px;">
+                                            <option value="React">React Web Developer</option>
+                                            <option value="Python">Python Data Science</option>
+                                            <option value="Figma">Figma UI/UX Design</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="career-ats-text">Resume Raw Text</label>
+                                        <textarea id="career-ats-text" rows="5" class="form-control" placeholder="John Doe | Software Engineer | React, JavaScript, HTML, CSS..."></textarea>
+                                    </div>
+                                    <button class="btn btn-primary" onclick="submitATSAnalysis()">
+                                        <i data-lucide="cpu"></i>
+                                        <span>Evaluate ATS Match</span>
+                                    </button>
+
+                                    <!-- ATS results panel -->
+                                    <div id="ats-result-box" class="card mt-3 hidden" style="background: rgba(15, 23, 42, 0.4); border-color: rgba(255, 255, 255, 0.08);">
+                                        <div class="card-body">
+                                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+                                                <strong>ATS Match Score:</strong>
+                                                <span class="badge badge-accent" id="ats-score-percent">0%</span>
+                                            </div>
+                                            <div id="ats-recs-list" class="text-secondary" style="font-size:0.88rem; display:flex; flex-direction:column; gap:6px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Career Subview 2: AI Mock Interview -->
+                                <div id="career-sub-interview" class="career-pane hidden">
+                                    <div id="interview-setup-box">
+                                        <p class="small-info mb-3">Prepare for actual interviews. Select your focus skill track, and click start to begin a dynamic text-based AI evaluation session.</p>
+                                        <div class="form-row" style="display:flex; gap:10px; margin-bottom:12px;">
+                                            <div class="form-group" style="flex:1;">
+                                                <label for="career-mock-skill">Skill Track</label>
+                                                <select id="career-mock-skill" class="form-control">
+                                                    <option value="React">React</option>
+                                                    <option value="Python">Python</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group" style="flex:1;">
+                                                <label for="career-mock-diff">Difficulty</label>
+                                                <select id="career-mock-diff" class="form-control">
+                                                    <option value="Beginner">Beginner</option>
+                                                    <option value="Intermediate">Intermediate</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-primary" onclick="startMockInterview()">
+                                            <i data-lucide="play-circle"></i>
+                                            <span>Begin Mock Session</span>
+                                        </button>
+                                    </div>
+
+                                    <!-- Interview active console -->
+                                    <div id="interview-console-box" class="hidden">
+                                        <div class="card mb-3" style="background: rgba(15, 23, 42, 0.4); border-color: rgba(255, 255, 255, 0.08);">
+                                            <div class="card-body">
+                                                <strong id="interview-q-index" style="color:var(--color-primary);">Question 1 of 2</strong>
+                                                <p id="interview-q-text" class="mt-2" style="font-weight: 500; font-size: 1.05rem;"></p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="interview-ans">Your Response Answer</label>
+                                            <textarea id="interview-ans" rows="4" class="form-control" placeholder="Write your technical explanation here..."></textarea>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                                            <span class="small-info text-muted">Press submit to analyze and move to next question.</span>
+                                            <button class="btn btn-primary" onclick="submitInterviewAnswer()">
+                                                <span>Submit Answer</span>
+                                                <i data-lucide="arrow-right"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Interview results panel -->
+                                    <div id="interview-result-box" class="hidden">
+                                        <div class="card mt-3" style="background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.25);">
+                                            <div class="card-body text-center">
+                                                <i data-lucide="award" style="width:48px; height:48px; color:var(--color-success); margin: 0 auto 8px;"></i>
+                                                <h3>Mock Session Evaluation Completed!</h3>
+                                                <p>Overall rating score: <strong class="text-success" id="interview-overall-score">0%</strong></p>
+                                                <button class="btn btn-secondary btn-small mt-3" onclick="resetInterviewConsole()">Close Console</button>
+                                            </div>
+                                        </div>
+                                        <div id="interview-details-box" class="mt-3" style="display:flex; flex-direction:column; gap:12px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Column 2: Notifications / Daily goals -->
+                    <div>
+                        <!-- Daily Goals -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h3><i data-lucide="list-todo" class="text-primary"></i> Daily Challenges</h3>
+                            </div>
+                            <div class="card-body">
+                                <ul class="checklist-items" id="goals-checklist">
+                                    <li class="checklist-item"><i data-lucide="circle"></i> Send 1 Swap Request (+10 XP)</li>
+                                    <li class="checklist-item"><i data-lucide="circle"></i> Send 2 Chat Messages (+10 XP)</li>
+                                    <li class="checklist-item"><i data-lucide="circle"></i> Complete 1 course milestone (+20 XP)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- System Notifications Feed -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i data-lucide="bell" class="text-primary"></i> Platform Updates</h3>
+                            </div>
+                            <div class="card-body" id="notify-container" style="max-height: 380px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+                                <div class="text-center text-muted p-3">No new notifications.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW: DISCOVER MATCHES ================= -->
+            <section id="view-discover" class="tab-view">
+                <div class="card">
+                    <div class="card-header">
+                        <div style="display: flex; gap: 1rem; align-items: center; flex: 1;">
+                            <div class="input-wrapper" style="max-width: 320px; margin-bottom: 0;">
+                                <i data-lucide="search"></i>
+                                <input type="text" id="discover-search" placeholder="Search by name, location, taught skills..." oninput="filterDiscoverPeers()" style="padding: 10px 12px 10px 38px;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="discover-peers-grid" class="peers-grid">
+                            <!-- Injected Peers list -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW: CHAT ROOM ================= -->
+            <section id="view-chat" class="tab-view">
+                <div class="chat-dashboard-wrapper">
+                    <!-- Conversations Sidebar -->
+                    <aside class="chat-sidebar">
+                        <div class="chat-sidebar-header">
+                            <h4>Active Chats</h4>
+                        </div>
+                        <div class="chat-channels-list" id="chat-channels-container">
+                            <div class="text-center text-muted p-4">No active conversations. Connect with matches to chat!</div>
+                        </div>
+                    </aside>
+
+                    <!-- Active Messaging Pane -->
+                    <div class="chat-room-pane" id="chat-empty-panel">
+                        <div class="chat-empty-content">
+                            <i data-lucide="message-square" style="width: 48px; height: 48px; color: var(--text-muted); margin-bottom: 12px;"></i>
+                            <h3>Your Secure Exchange Room</h3>
+                            <p class="text-secondary">Select an active contact partner from the sidebar directory to begin exchanging ideas, resources, and code.</p>
+                        </div>
+                    </div>
+
+                    <div class="chat-room-pane hidden" id="chat-active-panel">
+                        <header class="chat-header">
+                            <div class="chat-header-profile">
+                                <img id="chat-active-avatar" src="" alt="Avatar" class="avatar">
+                                <div id="chat-active-placeholder" class="avatar-placeholder">??</div>
+                                <div class="chat-header-info">
+                                    <span id="chat-active-name" style="font-weight:600; color:var(--text-primary);">Jane Smith</span>
+                                    <span id="chat-active-trust" style="font-size:0.75rem; color:var(--text-muted);">Trust Score: 780</span>
+                                </div>
+                            </div>
+                        </header>
+
+                        <!-- Messages stream -->
+                        <div class="chat-messages-container" id="chat-messages-stream">
+                            <!-- Chat records loaded dynamically -->
+                        </div>
+
+                        <!-- Typing indicator -->
+                        <div id="typing-indicator" class="typing-indicator hidden">
+                            <span id="typing-name">Someone</span> is typing
+                            <span class="typing-dots"><span></span><span></span><span></span></span>
+                        </div>
+
+                        <!-- Thread Reply preview bar (hidden by default) -->
+                        <div id="chat-reply-bar" class="chat-reply-preview hidden">
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                                Replying to: <span id="chat-reply-preview-text" style="font-style: italic;">"Hello..."</span>
+                            </div>
+                            <button class="btn-close" onclick="cancelChatReply()" style="background:none; border:none; color:var(--text-muted); cursor:pointer;"><i data-lucide="x" style="width:12px; height:12px;"></i></button>
+                        </div>
+
+                        <!-- Attachment input hidden -->
+                        <input type="file" id="chat-media-file" class="hidden" onchange="handleChatFileSelected(this)">
+
+                        <!-- Chat input footer -->
+                        <footer class="chat-input-footer">
+                            <button class="btn-icon" onclick="triggerChatFileSelect()" title="Attach image or document"><i data-lucide="paperclip"></i></button>
+                            <form id="chat-input-form" onsubmit="handleSendChatMessage(event)" style="display:flex; flex:1; gap:10px;">
+                                <input type="hidden" id="chat-reply-id-field">
+                                <input type="text" id="chat-message-input" placeholder="Type your message, paste code snippets..." required autocomplete="off">
+                                <button type="submit" class="btn btn-primary">
+                                    <span>Send</span>
+                                    <i data-lucide="send"></i>
+                                </button>
+                            </form>
+                        </footer>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW: MEETINGS ================= -->
+            <section id="view-meetings" class="tab-view">
+                <div class="card">
+                    <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3><i data-lucide="video" class="text-primary"></i> Scheduled Video Lessons</h3>
+                        <button class="btn btn-primary btn-small" onclick="openScheduleModal()">
+                            <i data-lucide="plus" style="width:14px;height:14px;"></i>
+                            <span>Schedule Session</span>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="scheduled-meetings-list" class="meetings-grid">
+                            <!-- Dynamically loaded meetings list -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rating feedback list -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3><i data-lucide="star" class="text-primary"></i> Pending Feedback Reviews</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="pending-feedback-list" class="feedback-items-list">
+                            <!-- Pending feedback ratings list -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW: ROADMAP PLANNER ================= -->
+            <section id="view-roadmap" class="tab-view">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i data-lucide="map" class="text-primary"></i> AI Custom Roadmap Planner</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="small-info mb-4">Enter a technical skill track you are looking to master. The local AI engine will dynamically map out structural modules, timelines, checkpoints, and practice challenges.</p>
+                        
+                        <form id="roadmap-form" onsubmit="handleRoadmapGenerate(event)" style="display:flex; gap:10px; margin-bottom: 2rem;">
+                            <div class="input-wrapper" style="flex:1; margin-bottom: 0;">
+                                <i data-lucide="award"></i>
+                                <input type="text" id="roadmap-skill-input" placeholder="e.g. React, Python, Figma, Docker, Node.js..." required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i data-lucide="sparkles"></i>
+                                <span>Generate AI Roadmap</span>
+                            </button>
+                        </form>
+
+                        <div id="roadmap-loading" class="skeleton-wrapper hidden">
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text"></div>
+                        </div>
+
+                        <!-- Roadmap Output View -->
+                        <div id="roadmap-result-box" class="hidden">
+                            <h2 id="roadmap-title" class="mb-3 text-primary">React Web Development Path</h2>
+                            <div class="roadmap-timeline" id="roadmap-timeline-container">
+                                <!-- Dynamic Module cards loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW: ASSESSMENTS ================= -->
+            <section id="view-assessment" class="tab-view">
+                <div class="assessment-container" id="assessment-setup-panel">
+                    <div class="card max-w-xl mx-auto">
+                        <div class="card-header">
+                            <h3><i data-lucide="cpu" class="text-primary"></i> Adaptive Skill Validation</h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="small-info mb-4">Prove your knowledge in skills you offer. The exam starts at Beginner level, adjusting question difficulty adaptively based on your responses. Score 40%+ to earn Beginner, 60%+ for Intermediate, and 85%+ for Advanced verified certifications.</p>
+                            
+                            <div class="form-group">
+                                <label for="assessment-skill-select">Choose Skill Track</label>
+                                <div class="input-wrapper">
+                                    <i data-lucide="award"></i>
+                                    <select id="assessment-skill-select">
+                                        <!-- Loaded dynamically -->
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary btn-block mt-4" onclick="startAdaptiveAssessment()">
+                                <span>Initialize Assessment</span>
+                                <i data-lucide="shield-check"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Exam panel -->
+                <div class="assessment-container hidden" id="assessment-active-panel">
+                    <div class="card max-w-xl mx-auto">
+                        <div class="card-header">
+                            <div class="quiz-badge" id="quiz-skill-badge">React (Adaptive Assessment)</div>
+                            <span class="quiz-warning-text" style="color:var(--color-accent);" id="quiz-alert-hint">Exam Active</span>
+                        </div>
+                        <div class="quiz-progress-bar">
+                            <div class="quiz-progress-fill" id="quiz-progress-indicator" style="width: 16%;"></div>
+                        </div>
+                        <div class="card-body">
+                            <span class="question-number" id="question-index-display">Question 1 of 6</span>
+                            <span class="badge badge-accent mb-2" id="question-difficulty-badge">Beginner</span>
+                            <h3 id="quiz-question-text" class="mt-2 mb-4" style="font-weight:600; font-size:1.15rem;">What is JSX in React?</h3>
+
+                            <div class="quiz-options-list" id="quiz-options-wrapper">
+                                <!-- Option buttons loaded dynamically -->
+                            </div>
+                            <button class="btn btn-primary btn-block mt-4" id="btn-next-question" onclick="submitAssessmentAnswer()">
+                                <span>Submit Answer</span>
+                                <i data-lucide="chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Result panel -->
+                <div class="assessment-container hidden" id="assessment-result-panel">
+                    <div class="card max-w-xl mx-auto text-center p-4">
+                        <div id="result-status-icon" class="status-icon-wrapper success" style="margin:0 auto 12px;">
+                            <i data-lucide="check-circle" style="width:48px; height:48px; color:var(--color-success);"></i>
+                        </div>
+                        <h2 id="result-title" class="mb-2">Congratulations! You Passed</h2>
+                        <p id="result-subtitle" class="text-secondary mb-4">You have successfully demonstrated knowledge in React Web Development.</p>
+                        
+                        <div class="score-display mb-4">
+                            <span class="score-percentage" id="result-score-percent">90%</span>
+                            <p class="text-muted">Final Evaluation Score</p>
+                        </div>
+
+                        <div class="stats-row mb-4">
+                            <div class="stat-card p-3">
+                                <strong>Assessment Level:</strong>
+                                <span id="result-level" class="badge badge-accent mt-1">Advanced</span>
+                            </div>
+                            <div class="stat-card p-3">
+                                <strong>Correct Answers:</strong>
+                                <span id="result-correct-count" class="badge user mt-1">5/6</span>
+                            </div>
+                        </div>
+
+                        <!-- Certificate Wrapper (dynamic rendering for export) -->
+                        <div class="certificate-badge-container hidden" id="certificate-graphic-wrap" style="background: rgba(15, 23, 42, 0.85); border: 2px solid var(--color-primary); border-radius: var(--radius-md); padding: 2rem; position: relative;">
+                            <div class="cert-watermark"><i data-lucide="shield-check" style="width:120px; height:120px; color:rgba(109, 40, 217, 0.05); position:absolute; right:10px; bottom:10px;"></i></div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:12px; margin-bottom:16px;">
+                                <div class="logo">
+                                    <i data-lucide="shuffle" style="color:var(--color-primary); width:24px; height:24px;"></i>
+                                    <span style="font-weight:800; font-family:var(--font-heading); color:#fff; font-size:1.1rem;">Nex<span class="premium-badge" style="font-size:0.6rem; padding:1px 5px;">Skill</span></span>
+                                </div>
+                                <span style="font-size: 0.65rem; color:var(--text-muted);">Unique ID: <strong id="cert-uid-field">CERT-XXXX</strong></span>
+                            </div>
+                            <h2 style="font-family:var(--font-heading); font-weight:800; font-size:1.5rem;" id="cert-user-name">Sarah Chen</h2>
+                            <p class="text-secondary mt-1" style="font-size:0.85rem;">is hereby verified and certified in</p>
+                            <h4 id="cert-skill-title" style="font-size:1.2rem; color:var(--color-primary); margin-top:6px;" class="mb-2">React Web Development</h4>
+                            <p class="cert-level" style="font-size:0.85rem;">Level: <strong id="cert-level-name" class="text-accent">Advanced</strong></p>
+                            <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:24px;">
+                                <span class="cert-date" id="cert-issue-date" style="font-size: 0.75rem; color:var(--text-muted);">Issued: 7/10/2026</span>
+                                <!-- Simulated QR code -->
+                                <div style="width: 50px; height: 50px; background: #fff; padding: 3px; border-radius: 4px;">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://localhost:5000/verify/CERT-ID" id="cert-qr-code" style="width:100%; height:100%;" alt="QR Code">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-actions mt-4" style="display:flex; justify-content:center; gap:10px;">
+                            <button class="btn btn-secondary" onclick="printCertificate()"><i data-lucide="download"></i> Download PDF</button>
+                            <button class="btn btn-primary" onclick="resetAssessmentSetup()">Return to Setup</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW: PROFILE ================= -->
+            <section id="view-profile" class="tab-view">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i data-lucide="sliders" class="text-primary"></i> Edit Profile Information</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="profile-edit-form" onsubmit="handleProfileUpdate(event)">
+                            <div class="form-group text-center photo-uploader-group">
+                                <label>Profile Picture</label>
+                                <div class="photo-preview-container">
+                                    <img id="prof-photo-preview" src="" alt="Avatar preview">
+                                    <div class="upload-overlay">
+                                        <i data-lucide="camera"></i>
+                                        <input type="file" id="prof-photo" accept="image/*" onchange="previewAndUploadAvatar(this)">
+                                    </div>
+                                </div>
+                                <div id="avatar-upload-status" style="margin-top:8px; font-size:0.8rem; color:var(--text-muted);"></div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="prof-name">Full Name</label>
+                                    <input type="text" id="prof-name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="prof-study">Field of Study / Title</label>
+                                    <input type="text" id="prof-study" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="prof-city">Place / City</label>
+                                    <input type="text" id="prof-city" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="prof-state">State / Province</label>
+                                    <input type="text" id="prof-state" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="prof-languages">Languages Known (comma separated)</label>
+                                <input type="text" id="prof-languages" required>
+                            </div>
+
+                            <div id="profile-skills-inputs-container">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="prof-skills-offer">Skills You Teach (comma separated)</label>
+                                        <input type="text" id="prof-skills-offer" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="prof-skills-learn">Skills You Learn (comma separated)</label>
+                                        <input type="text" id="prof-skills-learn" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary mt-3">
+                                <span>Save Changes</span>
+                                <i data-lucide="check"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Unlocked Certifications Grid -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3><i data-lucide="shield-check" class="text-primary"></i> Verified Certifications</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="profile-certifications-wrapper" class="certifications-list">
+                            <!-- Certified skill badges -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW: LEADERBOARD ================= -->
+            <section id="view-leaderboard" class="tab-view">
+                <div class="card">
+                    <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3><i data-lucide="trophy" class="text-primary"></i> Global Leaderboard</h3>
+                        <div class="auth-tabs" id="leaderboard-tabs" style="margin-bottom:0;">
+                            <button class="auth-tab active" onclick="loadLeaderboard('xp')">By XP</button>
+                            <button class="auth-tab" onclick="loadLeaderboard('rating')">By Rating</button>
+                            <button class="auth-tab" onclick="loadLeaderboard('streak')">By Streak</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="leaderboard-content">
+                            <div class="text-center text-muted p-4">Loading leaderboard...</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW: COMMUNITY FORUM ================= -->
+            <section id="view-forum" class="tab-view">
+                <div class="card">
+                    <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3><i data-lucide="messages-square" class="text-primary"></i> Community Forum</h3>
+                        <button class="btn btn-primary btn-small" onclick="openNewPostModal()">
+                            <i data-lucide="plus" style="width:14px;height:14px;"></i>
+                            <span>New Post</span>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="forum-posts-list">
+                            <div class="text-center text-muted p-4">Loading discussions...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Forum Post Detail View (hidden by default) -->
+                <div class="card mt-4 hidden" id="forum-detail-card">
+                    <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3 id="forum-detail-title">Post Title</h3>
+                        <button class="btn btn-secondary btn-small" onclick="closeForumDetail()">
+                            <i data-lucide="arrow-left" style="width:14px;height:14px;"></i>
+                            <span>Back</span>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="forum-detail-body" style="margin-bottom:1.5rem;"></div>
+                        <h4 style="margin-bottom:0.75rem; font-size:0.9rem; color:var(--text-secondary);">Replies</h4>
+                        <div id="forum-replies-list" style="margin-bottom:1rem;"></div>
+                        <form id="forum-reply-form" onsubmit="submitForumReply(event)" style="display:flex; gap:10px;">
+                            <input type="hidden" id="forum-reply-post-id">
+                            <input type="text" id="forum-reply-input" placeholder="Write a reply..." style="flex:1; padding:10px 14px; background:rgba(255,255,255,0.04); border:1px solid var(--border-color); border-radius:var(--radius-sm); color:var(--text-primary); font-family:var(--font-sans);" required>
+                            <button type="submit" class="btn btn-primary btn-small">Reply</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- Peer Profile Modal -->
+    <div id="peer-profile-modal" class="modal-backdrop hidden peer-profile-modal">
+        <div class="modal-card" style="max-width:520px;">
+            <div class="modal-header">
+                <h3>Peer Profile</h3>
+                <button class="btn-close" onclick="closePeerProfileModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body" id="peer-profile-content">
+                <!-- Loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- New Forum Post Modal -->
+    <div id="new-post-modal" class="modal-backdrop hidden">
+        <div class="modal-card" style="max-width:520px;">
+            <div class="modal-header">
+                <h3>Start a Discussion</h3>
+                <button class="btn-close" onclick="closeNewPostModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="new-post-form" onsubmit="submitNewForumPost(event)">
+                    <div class="form-group">
+                        <label for="new-post-title">Title</label>
+                        <input type="text" id="new-post-title" required placeholder="What's on your mind?">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-post-body">Content</label>
+                        <textarea id="new-post-body" rows="4" required placeholder="Share your question, tip, or insight..." style="width:100%; padding:10px; background:rgba(255,255,255,0.04); border:1px solid var(--border-color); border-radius:var(--radius-sm); color:var(--text-primary); font-family:var(--font-sans); resize:vertical;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-post-tag">Tag</label>
+                        <select id="new-post-tag" style="padding:8px; background:rgba(255,255,255,0.04); border:1px solid var(--border-color); border-radius:var(--radius-sm); color:var(--text-primary);">
+                            <option value="General">General</option>
+                            <option value="React">React</option>
+                            <option value="Python">Python</option>
+                            <option value="Design">Design</option>
+                            <option value="Career">Career</option>
+                            <option value="Help">Help</option>
+                        </select>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeNewPostModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Post Discussion</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Meeting Modal -->
+    <div id="schedule-modal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Schedule 1-on-1 Swap Session</h3>
+                <button class="btn-close" onclick="closeScheduleModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="schedule-form" onsubmit="handleScheduleSubmit(event)">
+                    <div class="form-group">
+                        <label for="schedule-partner">Swap Peer Partner</label>
+                        <select id="schedule-partner" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="schedule-skill">Skill Track Focus</label>
+                        <select id="schedule-skill" required></select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="schedule-date">Date</label>
+                            <input type="date" id="schedule-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="schedule-time">Time Slot</label>
+                            <input type="time" id="schedule-time" required>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeScheduleModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <span>Book & Generate Meet Link</span>
+                            <i data-lucide="video"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rating feedback Modal -->
+    <div id="rating-modal" class="modal-backdrop hidden">
+        <div class="modal-card max-w-sm">
+            <div class="modal-header">
+                <h3>Rate Your Teacher</h3>
+                <button class="btn-close" onclick="closeRatingModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body text-center">
+                <p id="rating-modal-partner-info">How was your session with Jane Doe?</p>
+                <input type="hidden" id="rating-modal-meeting-id">
+
+                <div class="rating-stars-picker">
+                    <button class="star-btn" data-star="1" onclick="setRatingValue(1)"><i data-lucide="star"></i></button>
+                    <button class="star-btn" data-star="2" onclick="setRatingValue(2)"><i data-lucide="star"></i></button>
+                    <button class="star-btn" data-star="3" onclick="setRatingValue(3)"><i data-lucide="star"></i></button>
+                    <button class="star-btn" data-star="4" onclick="setRatingValue(4)"><i data-lucide="star"></i></button>
+                    <button class="star-btn" data-star="5" onclick="setRatingValue(5)"><i data-lucide="star"></i></button>
+                </div>
+
+                <div class="form-group text-left mt-3">
+                    <label for="rating-comment">Add written feedback (optional)</label>
+                    <textarea id="rating-comment" rows="3" placeholder="Explain what went well or how they can improve..."></textarea>
+                </div>
+
+                <div class="modal-actions mt-4">
+                    <button type="button" class="btn btn-secondary" onclick="closeRatingModal()">Skip</button>
+                    <button type="button" class="btn btn-primary" onclick="submitRatingFeedback()">Submit Rating</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- YouTube Video player Modal -->
+    <div id="youtube-player-modal" class="modal-backdrop hidden">
+        <div class="modal-card yt-modal-card">
+            <div class="modal-header">
+                <h3 id="yt-player-title">YouTube Masterclass</h3>
+                <button class="btn-close" onclick="closeYouTubePlayer()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="video-container">
+                    <iframe id="yt-iframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="flex-actions justify-between align-center" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                    <div style="font-size: 0.88rem; color: var(--text-secondary);">
+                        Complete this video course to claim XP rewards!
+                    </div>
+                    <button class="btn btn-primary" id="btn-complete-course" onclick="markActiveCourseCompleted()">
+                        <i data-lucide="award"></i>
+                        <span>Mark as Completed & Claim XP</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mandatory tech entry exam overlay -->
+    <div id="entry-level-exam-overlay" class="modal-backdrop entry-exam-overlay hidden">
+        <div class="modal-card entry-exam-card no-select">
+            <div class="entry-exam-welcome">
+                <h2>Entry-Level Verification Exam</h2>
+                <p>Welcome! Every user must complete this quick 30-question general technology evaluation. Upon completion, your full dashboard and learning profile skills will be unlocked.</p>
+            </div>
+            
+            <div class="quiz-progress-bar">
+                <div class="quiz-progress-fill" id="entry-quiz-progress" style="width: 0%;"></div>
+            </div>
+
+            <div class="quiz-question-box">
+                <span class="question-number" id="entry-question-index">Question 1 of 30</span>
+                <h3 id="entry-question-text">Loading question...</h3>
+            </div>
+
+            <div class="quiz-options-list" id="entry-quiz-options">
+                <!-- Options injected here -->
+            </div>
+
+            <div class="quiz-actions">
+                <span class="quiz-warning-text" id="entry-quiz-alert">Select an answer to proceed.</span>
+                <button class="btn btn-primary" id="btn-entry-next" onclick="submitEntryAnswer()">
+                    <span>Next Question</span>
+                    <i data-lucide="chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container (stacking) -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Core App logic script -->
+    <script src="app.js"></script>
+
+</body>
+</html>
