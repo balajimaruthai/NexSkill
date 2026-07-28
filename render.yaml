@@ -1,12 +1,28 @@
 services:
   - type: web
+    name: emergency-ward-prediction
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+    rootDir: emergency-ward-prediction
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+
+  - type: web
     name: nexskill
     runtime: node
     plan: free
     region: singapore
     branch: main
     buildCommand: npm install
-    startCommand: node server.js
+    startCommand: node backend/server.js
     healthCheckPath: /
     envVars:
       - key: NODE_ENV

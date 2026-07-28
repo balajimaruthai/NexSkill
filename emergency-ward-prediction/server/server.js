@@ -1,6 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import axios from 'axios';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -227,6 +232,17 @@ app.get('/api/analytics', (req, res) => res.json({
     { hour: '16:00', rush: 90 }, { hour: '20:00', rush: 50 }
   ]
 }));
+
+// Serve static React production build assets
+const distPath = path.join(__dirname, '../dist');
+app.use(express.static(distPath));
+
+// SPA fallback route for React client-side routing
+app.get('*', (req, res) => {
+  if (!req.path.startsWith('/api')) {
+    res.sendFile(path.join(distPath, 'index.html'));
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`EWRP Node.js Express server running on port ${PORT}`);
