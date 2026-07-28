@@ -66,11 +66,10 @@ let db = {
 };
 
 // Health Check
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.json({
     status: 'healthy',
     system: 'Emergency Ward Rush Prediction System Backend API',
-    message: 'Backend server is active. Frontend UI is available at http://localhost:3001',
     endpoints: ['/api/health', '/api/patients', '/api/predict', '/api/stats', '/api/hospitals']
   });
 });
